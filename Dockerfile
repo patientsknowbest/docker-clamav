@@ -1,5 +1,4 @@
 FROM debian:buster-slim
-LABEL maintainer="Markus Kosmal <dude@m-ko.de>"
 
 # Debian Base to use
 ENV DEBIAN_VERSION buster
@@ -11,7 +10,6 @@ RUN echo "deb http://http.debian.net/debian/ $DEBIAN_VERSION main contrib non-fr
     apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install --no-install-recommends -y -qq \
         clamav-daemon \
-        clamav-freshclam \
         libclamunrar9 \
         wget && \
     apt-get clean && \
@@ -30,10 +28,7 @@ RUN mkdir /var/run/clamav && \
 
 # av configuration update
 RUN sed -i 's/^Foreground .*$/Foreground true/g' /etc/clamav/clamd.conf && \
-    echo "TCPSocket 3310" >> /etc/clamav/clamd.conf && \
-    if ! [ -z $HTTPProxyServer ]; then echo "HTTPProxyServer $HTTPProxyServer" >> /etc/clamav/freshclam.conf; fi && \
-    if ! [ -z $HTTPProxyPort   ]; then echo "HTTPProxyPort $HTTPProxyPort" >> /etc/clamav/freshclam.conf; fi && \
-    sed -i 's/^Foreground .*$/Foreground true/g' /etc/clamav/freshclam.conf
+    echo "TCPSocket 3310" >> /etc/clamav/clamd.conf
 
 # env based configs - will be called by bootstrap.sh
 ADD envconfig.sh /
@@ -44,6 +39,4 @@ VOLUME ["/var/lib/clamav"]
 # port provision
 EXPOSE 3310
 
-# av daemon bootstrapping
-ADD bootstrap.sh /
-CMD ["/bootstrap.sh"]
+CMD ["clamd"]
