@@ -48,6 +48,11 @@ Find the latest releases at the official [docker hub](https://hub.docker.com/r/m
     docker run -d -p 3310:3310 mk0x/docker-clamav
 ```
 
+### Debian Buster Slim (:buster-slim)
+```bash
+    docker run -d -p 3310:3310 mk0x/docker-clamav:buster-slim
+```
+
 ### Alpine (:alpine)
 ```bash
     docker run -d -p 3310:3310 mk0x/docker-clamav:alpine
